@@ -17,26 +17,23 @@
 
 思路：核心点遍历给定字符串字符，判断以当前字符开头字符串是否等于目标字符串
 
-```go
-func strStr(haystack string, needle string) int {
-    if len(needle) == 0 {
-        return 0
-    }
-    var i, j int
-    // i不需要到len-1
-    for i = 0; i < len(haystack)-len(needle)+1; i++ {
-        for j = 0; j < len(needle); j++ {
-            if haystack[i+j] != needle[j] {
-                break
+```javascript
+var strStr = function(haystack, needle){
+    if (needle==="") return 0
+    for(var i=0; i<haystack.length; i++){
+        if(haystack[i]===needle[0]){
+            var flag = true;
+            for (var j=1;j<needle.length;j++){
+                if (haystack[i+j]!=needle[j]){
+                    flag = false
+                    break;
+                }
             }
-        }
-        // 判断字符串长度是否相等
-        if len(needle) == j {
-            return i
+            if (flag) return i
         }
     }
     return -1
-}
+};
 ```
 
 需要注意点
