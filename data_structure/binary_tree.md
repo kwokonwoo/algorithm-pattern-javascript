@@ -15,101 +15,90 @@
 
 #### 前序递归
 
-```go
-func preorderTraversal(root *TreeNode)  {
-    if root==nil{
-        return
-    }
-    // 先访问根再访问左右
-    fmt.Println(root.Val)
-    preorderTraversal(root.Left)
-    preorderTraversal(root.Right)
+```javascript
+funtion preorderTraversal(root) {
+	if (!root) {
+		return;
+	}
+	console.log(root.val);
+	var left = root.left;
+	var right = root.right;
+	left && preorderTraversal(left);
+	right && preorderTraversal(right);
 }
+preorderTraversal(node1);
 ```
 
 #### 前序非递归
 
-```go
-// V3：通过非递归遍历
-func preorderTraversal(root *TreeNode) []int {
-    // 非递归
-    if root == nil{
-        return nil
-    }
-    result:=make([]int,0)
-    stack:=make([]*TreeNode,0)
-
-    for root!=nil || len(stack)!=0{
-        for root !=nil{
-            // 前序遍历，所以先保存结果
-            result=append(result,root.Val)
-            stack=append(stack,root)
-            root=root.Left
-        }
-        // pop
-        node:=stack[len(stack)-1]
-        stack=stack[:len(stack)-1]
-        root=node.Right
-    }
-    return result
+```javascript
+// V3：通过迭代实现遍历
+function preorderTraversal(root) {
+	if (!root) {
+		return;
+	}
+	var stack = [root];
+	while (stack.length > 0) {
+		//取第一个
+		var item = stack.shift();
+		console.log(item.val);
+		if (item.right) {
+			stack.unshift(item.right);
+		}
+		if (item.left) {
+			stack.unshift(item.left);
+		}
+	}
 }
+preorderTraversal(node1);
 ```
 
 #### 中序非递归
 
-```go
-// 思路：通过stack 保存已经访问的元素，用于原路返回
-func inorderTraversal(root *TreeNode) []int {
-    result := make([]int, 0)
-    if root == nil {
-        return result
-    }
-    stack := make([]*TreeNode, 0)
-    for len(stack) > 0 || root != nil {
-        for root != nil {
-            stack = append(stack, root)
-            root = root.Left // 一直向左
-        }
-        // 弹出
-        val := stack[len(stack)-1]
-        stack = stack[:len(stack)-1]
-        result = append(result, val.Val)
-        root = val.Right
-    }
-    return result
+```javascript
+function inorderTraversal(root) {
+	if (!root) {
+		return;
+	}
+	var stack = [root];
+	while (stack.lenght > 0) {
+		var item = stack[stack.length - 1];
+		
+		if (!item.left || (item.left && item.left.isOk)) {
+			stack.pop();
+			item.isOk = true;
+			console.log(item.val);
+			item.right && stack.push(item.right);
+		} else if (item.left && !item.left.isOk) {
+			stack.push(item.left);
+		}
+	}	
 }
+inorderTraversal(node);
 ```
 
 #### 后序非递归
 
-```go
-func postorderTraversal(root *TreeNode) []int {
-	// 通过lastVisit标识右子节点是否已经弹出
-	if root == nil {
-		return nil
+```javascript
+function postorderTraversal(root) {
+	if (!root) {
+		return;
 	}
-	result := make([]int, 0)
-	stack := make([]*TreeNode, 0)
-	var lastVisit *TreeNode
-	for root != nil || len(stack) != 0 {
-		for root != nil {
-			stack = append(stack, root)
-			root = root.Left
-		}
-		// 这里先看看，先不弹出
-		node:= stack[len(stack)-1]
-		// 根节点必须在右节点弹出之后，再弹出
-		if node.Right == nil || node.Right == lastVisit {
-			stack = stack[:len(stack)-1] // pop
-			result = append(result, node.Val)
-			// 标记当前这个节点已经弹出过
-			lastVisit = node
-		} else {
-			root = node.Right
+	var stack = [root];
+	while (stack.length > 0) {
+		var item = stack[stack.length -1];
+		if ((item.left == null && item.right == null) || (item.left && item.left.isOk && item.right && item.right.isOk) || (item.left && item.left.isOk && item.right == null) || (item.left == null && item.right && item.right.isOk)) {
+			item.isOk = true;
+			console.log(item.val);
+			stack.pop();
+		} else if (item.left && !item.left.isOk) {
+			stack.push(item.left);
+		} else if (item.right && !item.right.isOk) {
+			stack.push(item.right);
 		}
 	}
-	return result
 }
+postorderTraversal(node);
 ```
 
 注意点
